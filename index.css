@@ -1,3 +1,31 @@
-#heading {
-    color: red
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    border: 3px solid;
+}
+
+.navContainer > ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.restroCard {
+    height: auto;
+    width: 300px;
+    border: 1px solid;
+    padding: 4px;
+}
+
+.resImg {
+    height: 300px;
+    width: 100%;
+}
+
+.bodyContainer {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }

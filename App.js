@@ -1,57 +1,48 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import resData from './mockData.json'
+import Header from "./src/components/Header"
+import { Outlet } from "react-router-dom"
+import { useNetworkStatus } from "./src/utils/hooks/useNetworkStatus"
+import { useContext, useEffect, useState } from "react"
+import { ResContext } from "./src/context/ResContext"
+import { Provider } from "react-redux"
+import AppStore from "./src/store/AppStore"
+// import HTMLToPDF from "./htmlToPdf"
 
-const Header = () => {
-    return (
-        <div className="headerContainer">
-            <div className='header'>
-                <div className="logoContainer">
-                    <img src="https://png.pngtree.com/template/20191014/ourmid/pngtree-pin-food-delivery-map-location-delivery-logo-concept-image_318151.jpg" alt="logo not found" height={100} width={100} />
-                </div>
-                <div className="navContainer">
-                    <ul>
-                        <li><strong>Home</strong></li>
-                        <li><strong>About Us</strong></li>
-                        <li><strong>Contact Us</strong></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    )
-}
 
-const Resturant = (props) => {
-    return (
-        <div className='restroCard'>
-            <img className='resImg' src={props.resData.image.url} />
-            <h2>{props.resData.name}</h2>
-            <h2>{props.resData.rating.rating_text}</h2>
-            <p>{props.resData.cfo.text}</p>
-            <p>{props.resData.cuisine.map(({ name }) => name).join(',')}</p>
-        </div>
-    )
-}
+//code spliting
+//dynamic rendering
+//lazy loading
 
-const Body = () => {
-    return (
-        <div className='bodyContainer'>
-            <Resturant resData={resData[0]}/>
-            <Resturant resData={resData[1]}/>
-        </div>
-    )
-}
+//lifting state up  ==> update state from child
+//controlled & uncontrolled components
+
+//props drilling
+
+//useMemo
+//useCallback
+//useRef
 
 function App() {
+    const { isOnline } = useNetworkStatus()
+    const [user, setUser] = useState('')
+    const { userName } = useContext(ResContext)
+
+    useEffect(() => {
+        setUser('John')
+    }, [])
+
     return (
-        <>
-            <Header />
-            <Body />
-        </>
+        <Provider store={AppStore}>
+            <ResContext.Provider value={{ userName: user, setUser }}>
+                <div className='mainContainer'>
+                    <ResContext.Provider value={{ userName }}>
+                        <Header />
+                    </ResContext.Provider>
+                    {isOnline ? <Outlet /> : <h1>Your are not connected to internet, please make sure your internet is working</h1>}
+                </div>
+            </ResContext.Provider>
+        </Provider>
+        // <HTMLToPDF/>
     )
 }
 
-
-const root = ReactDOM.createRoot(document.getElementById('root'))
-
-root.render(<App />)
+export default App

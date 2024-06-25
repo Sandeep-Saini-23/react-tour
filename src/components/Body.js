@@ -1,19 +1,21 @@
 import ResturantCard, { SpecialCard } from "./ResturantCard"
-import { useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { Shimmer } from "./Shimmer"
+import { ResContext } from "../context/ResContext"
 
 //Higher order components
 
 const Body = () => {
     const [filterRestro, setFilterRestro] = useState([])
     const SpecialRestroCard = SpecialCard(ResturantCard)
+    const {userName,setUser} = useContext(ResContext)
 
     //UI layer
     //Data layer
 
-    const filterTopRatedRestaurants = () => {
-        setFilterRestro(resData.filter((res) => Number(res.info.rating.rating_text) >= 4))
-    }
+    const filterTopRatedRestaurants = useCallback(() => {
+        setFilterRestro(filterRestro.filter((res) => Number(res.info.rating.rating_text) >= 4))
+    },[filterRestro])
 
     const getData = async () => {
         try {
@@ -39,9 +41,12 @@ const Body = () => {
         !filterRestro.length ? <Shimmer /> : (
             <div style={{ padding: '10px' }}>
                 <button onClick={filterTopRatedRestaurants}>Top rated restaurants</button>
+                <label>UserName : 
+                    <input value={userName} onChange={(e) => setUser(e.target.value)}/>
+                </label>
                 <div className='bodyContainer'>
                     {filterRestro?.map((res, i) => {
-                        return res.info.avgRating >= 4  ? <SpecialRestroCard resData={res.info}/> :<ResturantCard key={i} resData={res.info} />
+                        return res.info.avgRating >= 4  ? <SpecialRestroCard key={i} resData={res.info}/> :<ResturantCard key={i} resData={res.info} />
                     })}
                 </div>
             </div>)
